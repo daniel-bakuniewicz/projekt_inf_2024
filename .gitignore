@@ -1,0 +1,9 @@
+# Ignorowanie plików wynikowych kompilacji
+main
+*.o
+
+# Ignorowanie folderu .vscode
+.vscode/
+
+# Ignorowanie folderów build
+build/
