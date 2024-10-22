@@ -6,6 +6,7 @@ void Begin(const sf::Window& window)
 {
     circle.setOrigin(sf::Vector2f(circle.getRadius(), circle.getRadius()));
     circle.setPosition((sf::Vector2f)window.getSize() / 2.0f);
+    circle.setFillColor(sf::Color::Green);
 }
 
 void Update(float deltaTime)
