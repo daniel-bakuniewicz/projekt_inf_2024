@@ -5,7 +5,12 @@ int main()
 {
     cout <<"krotki test"<<endl;
 
-    
+
+
+
+
+    cout <<"test";
+
     return 0;
 }
 
