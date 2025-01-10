@@ -10,6 +10,8 @@ find_package(SFML 2.6 COMPONENTS graphics window system REQUIRED)
 set(SOURCES
     src/main.cpp
     src/Game.cpp
+    src/Player.cpp
+    src/Platform.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
