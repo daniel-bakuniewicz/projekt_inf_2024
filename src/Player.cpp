@@ -1,5 +1,4 @@
 #include "Player.h"
-#include <iostream>
 
 Player::Player()
     : speed(200.0f), jumpVelocity(-300.0f), gravity(500.0f), verticalVelocity(0.0f), onGround(false)

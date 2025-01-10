@@ -8,10 +8,13 @@ class Game
 {
 private:
     sf::RenderWindow window;
+    sf::Texture backgroundTexture;
+    sf::Sprite backgroundSprite;
     Player player;
     std::vector<Platform> platforms;
 
     void initPlatforms();
+    void initBackground();
 
 public:
     Game();

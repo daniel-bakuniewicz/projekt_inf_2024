@@ -3,23 +3,23 @@
 Game::Game() : window(sf::VideoMode(800, 600), "Penguin Defense")
 {
     window.setFramerateLimit(60);
+    initBackground();
     player.init(window);
     initPlatforms();
+}
+
+void Game::initBackground()
+{
+    if (!backgroundTexture.loadFromFile("assets/background.png"))
+    {
+        throw std::runtime_error("Failed to load background.png");
+    }
+    backgroundSprite.setTexture(backgroundTexture);
 }
 
 void Game::initPlatforms()
 {
     platforms.emplace_back(100.0f, 500.0f, 200.0f, 20.0f);
-    platforms.emplace_back(300.0f, 450.0f, 200.0f, 20.0f);
-    platforms.emplace_back(500.0f, 400.0f, 200.0f, 20.0f);
-    platforms.emplace_back(300.0f, 350.0f, 200.0f, 20.0f);
-    platforms.emplace_back(100.0f, 300.0f, 200.0f, 20.0f);
-    platforms.emplace_back(300.0f, 250.0f, 200.0f, 20.0f);
-    platforms.emplace_back(500.0f, 200.0f, 200.0f, 20.0f);
-    platforms.emplace_back(300.0f, 150.0f, 200.0f, 20.0f);
-    platforms.emplace_back(100.0f, 100.0f, 200.0f, 20.0f);
-    
-
 }
 
 void Game::run()
@@ -47,6 +47,8 @@ void Game::run()
         }
 
         window.clear();
+
+        window.draw(backgroundSprite); // Rysowanie tła
 
         for (auto& platform : platforms)
         {

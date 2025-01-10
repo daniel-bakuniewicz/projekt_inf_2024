@@ -3,7 +3,7 @@
 Platform::Platform(float x, float y, float width, float height)
 {
     shape.setSize({width, height});
-    shape.setFillColor(sf::Color::Green);
+    shape.setFillColor(sf::Color::Cyan);
     shape.setPosition(x, y);
 }
 
