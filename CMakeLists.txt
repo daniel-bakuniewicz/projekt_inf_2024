@@ -13,6 +13,7 @@ set(SOURCES
     src/Player.cpp
     src/Platform.cpp
     src/Enemy.cpp
+    src/Bullet.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})

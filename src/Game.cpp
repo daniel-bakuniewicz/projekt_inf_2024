@@ -12,6 +12,8 @@ Game::Game() : window(sf::VideoMode(800, 600), "Penguin Defense")
         sf::FloatRect platformBounds = middlePlatform.getBounds();
         player.init(window, platformBounds.left + platformBounds.width / 2, platformBounds.top - 25.0f);
     }
+
+    generateEnemies();
 }
 
 void Game::initBackground()
@@ -40,7 +42,7 @@ void Game::run()
             }
         }
 
-        player.update(deltaTime);
+        player.update(deltaTime, window);
 
         for (auto& platform : platforms)
         {
@@ -51,6 +53,23 @@ void Game::run()
         {
             enemy.update(deltaTime);
         }
+
+        handleShooting();
+
+        for (auto it = bullets.begin(); it != bullets.end();)
+        {
+            it->update(deltaTime);
+            if (it->getBounds().left > window.getSize().x)
+            {
+                it = bullets.erase(it);
+            }
+            else
+            {
+                ++it;
+            }
+        }
+
+        spawnNextWave();
 
         window.clear();
 
@@ -66,12 +85,16 @@ void Game::run()
             enemy.render(window);
         }
 
+        for (auto& bullet : bullets)
+        {
+            bullet.render(window);
+        }
+
         player.render(window);
 
         window.display();
     }
 }
-
 
 void Game::generateMap()
 {
@@ -97,18 +120,52 @@ void Game::generateMap()
 
 void Game::generateEnemies()
 {
-    float windowWidth = window.getSize().x;
-    float enemyWidth = 40.0f;
-    float enemyHeight = 40.0f;
-    float enemyStartX = windowWidth - enemyWidth;
     float enemySpeed = 100.0f;
-
-    enemies.clear();
     for (const auto& platform : platforms)
     {
         sf::FloatRect platformBounds = platform.getBounds();
-        float enemyY = platformBounds.top - enemyHeight;
-        enemies.emplace_back(enemyStartX, enemyY, enemyWidth, enemyHeight, enemySpeed);
+        float enemyY = platformBounds.top - 40.0f;
+        enemies.emplace_back(800.0f, enemyY, 40.0f, 40.0f, enemySpeed);
     }
 }
+
+
+void Game::spawnNextWave()
+{
+    bool allEnemiesGone = true;
+
+    for (const auto& enemy : enemies)
+    {
+        if (enemy.getBounds().left + enemy.getBounds().width > 0)
+        {
+            allEnemiesGone = false;
+            break;
+        }
+    }
+
+    if (allEnemiesGone)
+    {
+        ++waveCounter;
+        generateEnemies();
+    }
+}
+
+void Game::handleShooting()
+{
+    static sf::Clock shootClock; 
+    float shootDelay = 0.3f;
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && shootClock.getElapsedTime().asSeconds() > shootDelay)
+    {
+        sf::Vector2f playerPosition = player.getBounds().getPosition();
+        float bulletX = playerPosition.x + player.getBounds().width / 2.0f;
+        float bulletY = playerPosition.y + player.getBounds().height / 2.0f;
+
+        bullets.emplace_back(bulletX, bulletY, 10.0f, 5.0f, 500.0f);
+        shootClock.restart();
+    }
+}
+
+
+
 

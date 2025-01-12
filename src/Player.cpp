@@ -1,8 +1,7 @@
 #include "Player.h"
 #include <iostream>
 
-Player::Player()
-    : speed(200.0f), jumpVelocity(-500.0f), gravity(500.0f), verticalVelocity(0.0f), onGround(false), canFallThrough(false)
+Player::Player() : speed(200.0f), jumpVelocity(-500.0f), gravity(500.0f), verticalVelocity(0.0f), onGround(false), canFallThrough(false)
 {
     shape.setSize({50, 50});
     shape.setFillColor(sf::Color::Blue);
@@ -15,12 +14,13 @@ void Player::init(const sf::RenderWindow& window, float startX, float startY)
     onGround = true;
 }
 
-void Player::update(float deltaTime)
+void Player::update(float deltaTime, const sf::RenderWindow& window)
 {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
     {
         shape.move(-speed * deltaTime, 0);
     }
+
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
     {
         shape.move(speed * deltaTime, 0);
@@ -32,17 +32,10 @@ void Player::update(float deltaTime)
         onGround = false;
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && onGround)
-    {
-        verticalVelocity = jumpVelocity;
-        onGround = false;
-    }
-
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
     {
         canFallThrough = true;
     }
-
     else
     {
         canFallThrough = false;
@@ -53,7 +46,6 @@ void Player::update(float deltaTime)
         float enhancedGravity = gravity * 2.0f;
         verticalVelocity += enhancedGravity * deltaTime;
     }
-
     else
     {
         verticalVelocity += gravity * deltaTime;
@@ -67,7 +59,21 @@ void Player::update(float deltaTime)
         verticalVelocity = 0;
         onGround = true;
     }
+
+    sf::Vector2f position = shape.getPosition();
+    float halfWidth = shape.getSize().x / 2.0f;
+
+    if (position.x - halfWidth < 0)
+    {
+        shape.setPosition(halfWidth, position.y);
+    }
+
+    else if (position.x + halfWidth > window.getSize().x)
+    {
+        shape.setPosition(window.getSize().x - halfWidth, position.y);
+    }
 }
+
 
 void Player::checkCollision(const sf::FloatRect& platformBounds)
 {
