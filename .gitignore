@@ -8,4 +8,4 @@ main
 # Ignorowanie folderów build
 build/
 
-assets/
+assets/background.png
