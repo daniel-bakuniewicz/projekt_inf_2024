@@ -37,6 +37,16 @@ void Player::update(float deltaTime)
         onGround = false;
     }
 
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+    {
+        canFallThrough = true;
+    }
+
+    else
+    {
+        canFallThrough = false;
+    }
+
     verticalVelocity += gravity * deltaTime;
     shape.move(0, verticalVelocity * deltaTime);
 
@@ -51,6 +61,11 @@ void Player::update(float deltaTime)
 void Player::checkCollision(const sf::FloatRect& platformBounds)
 {
     sf::FloatRect playerBounds = getBounds();
+
+    if (canFallThrough)
+    {
+        return;
+    }
 
     if (playerBounds.intersects(platformBounds) && verticalVelocity > 0)
     {

@@ -48,7 +48,7 @@ void Game::run()
 
         window.clear();
 
-        window.draw(backgroundSprite); // Rysowanie tła
+        window.draw(backgroundSprite);
 
         for (auto& platform : platforms)
         {

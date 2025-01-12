@@ -10,6 +10,7 @@ private:
     float gravity;
     float verticalVelocity;
     bool onGround;
+    bool canFallThrough;
 
 public:
     Player();
