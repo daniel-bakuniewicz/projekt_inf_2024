@@ -8,5 +8,4 @@ main
 # Ignorowanie folderów build
 build/
 
-assets/background.png
-assets/arial.ttf
+assets/
