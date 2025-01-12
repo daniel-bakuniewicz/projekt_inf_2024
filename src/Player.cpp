@@ -1,16 +1,17 @@
 #include "Player.h"
+#include <iostream>
 
 Player::Player()
-    : speed(200.0f), jumpVelocity(-300.0f), gravity(500.0f), verticalVelocity(0.0f), onGround(false)
+    : speed(200.0f), jumpVelocity(-500.0f), gravity(500.0f), verticalVelocity(0.0f), onGround(false), canFallThrough(false)
 {
     shape.setSize({50, 50});
     shape.setFillColor(sf::Color::Blue);
     shape.setOrigin(shape.getSize().x / 2.0f, shape.getSize().y / 2.0f);
 }
 
-void Player::init(const sf::RenderWindow& window)
+void Player::init(const sf::RenderWindow& window, float startX, float startY)
 {
-    shape.setPosition(window.getSize().x / 2.0f, window.getSize().y - 60);
+    shape.setPosition(startX, startY);
     onGround = true;
 }
 
@@ -47,7 +48,17 @@ void Player::update(float deltaTime)
         canFallThrough = false;
     }
 
-    verticalVelocity += gravity * deltaTime;
+    if (!onGround)
+    {
+        float enhancedGravity = gravity * 2.0f;
+        verticalVelocity += enhancedGravity * deltaTime;
+    }
+
+    else
+    {
+        verticalVelocity += gravity * deltaTime;
+    }
+
     shape.move(0, verticalVelocity * deltaTime);
 
     if (shape.getPosition().y >= 550)

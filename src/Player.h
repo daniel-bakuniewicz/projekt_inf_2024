@@ -15,7 +15,7 @@ private:
 public:
     Player();
 
-    void init(const sf::RenderWindow& window);
+    void init(const sf::RenderWindow& window, float startX, float startY);
     void update(float deltaTime);
     void checkCollision(const sf::FloatRect& platformBounds);
     void render(sf::RenderWindow& window);
