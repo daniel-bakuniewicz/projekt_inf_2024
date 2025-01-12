@@ -1,6 +1,8 @@
 #include "Game.h"
+#include <cstdlib>
+#include <ctime>
 
-Game::Game() : window(sf::VideoMode(800, 600), "Penguin Defense")
+Game::Game() : window(sf::VideoMode(800, 600), "Penguin Defense"), waveCounter(1), killCount(0), lives(10)
 {
     window.setFramerateLimit(60);
     initBackground();
@@ -12,6 +14,27 @@ Game::Game() : window(sf::VideoMode(800, 600), "Penguin Defense")
         sf::FloatRect platformBounds = middlePlatform.getBounds();
         player.init(window, platformBounds.left + platformBounds.width / 2, platformBounds.top - 25.0f);
     }
+
+    if (!font.loadFromFile("assets/arial.ttf"))
+    {
+        throw std::runtime_error("Failed to load font: assets/arial.ttf");
+    }
+
+    timeText.setFont(font);
+    timeText.setCharacterSize(20);
+    timeText.setFillColor(sf::Color::White);
+    timeText.setPosition(600.0f, 10.0f);
+
+    killsText.setFont(font);
+    killsText.setCharacterSize(20);
+    killsText.setFillColor(sf::Color::White);
+    killsText.setPosition(600.0f, 40.0f);
+
+    livesText.setFont(font);
+    livesText.setCharacterSize(20);
+    livesText.setFillColor(sf::Color::White);
+    livesText.setPosition(600.0f, 70.0f);
+    updateLivesText();
 
     generateEnemies();
 }
@@ -69,10 +92,75 @@ void Game::run()
             }
         }
 
+        for (auto bulletIt = bullets.begin(); bulletIt != bullets.end();)
+        {
+            bool bulletRemoved = false;
+
+            for (auto enemyIt = enemies.begin(); enemyIt != enemies.end();)
+            {
+                if (bulletIt->getBounds().intersects(enemyIt->getBounds()))
+                {
+                    enemyIt->takeDamage();
+                    bulletIt = bullets.erase(bulletIt);
+                    bulletRemoved = true;
+
+                    if (enemyIt->isDead())
+                    {
+                        enemyIt = enemies.erase(enemyIt);
+                        killCount++;
+                    }
+                    else
+                    {
+                        ++enemyIt;
+                    }
+
+                    break;
+                }
+                else
+                {
+                    ++enemyIt;
+                }
+            }
+
+            if (!bulletRemoved)
+            {
+                ++bulletIt;
+            }
+        }
+
+        for (auto enemyIt = enemies.begin(); enemyIt != enemies.end();)
+        {
+            if (enemyIt->getBounds().intersects(player.getBounds()))
+            {
+                lives -= 2;
+                updateLivesText();
+                enemyIt = enemies.erase(enemyIt);
+            }
+            else if (enemyIt->getBounds().left <= 0)
+            {
+                lives--;
+                updateLivesText();
+                enemyIt = enemies.erase(enemyIt);
+            }
+            else
+            {
+                ++enemyIt;
+            }
+        }
+
+
+        if (lives <= 0)
+        {
+            window.close();
+        }
+
+
+
         spawnNextWave();
 
-        window.clear();
+        updateUI();
 
+        window.clear();
         window.draw(backgroundSprite);
 
         for (auto& platform : platforms)
@@ -92,9 +180,14 @@ void Game::run()
 
         player.render(window);
 
+        window.draw(timeText);
+        window.draw(killsText);
+        window.draw(livesText);
+
         window.display();
     }
 }
+
 
 void Game::generateMap()
 {
@@ -120,14 +213,31 @@ void Game::generateMap()
 
 void Game::generateEnemies()
 {
-    float enemySpeed = 100.0f;
+    float enemyWidth = 40.0f;
+    float enemyHeight = 40.0f;
+    float enemyStartX = window.getSize().x - enemyWidth;
+    float enemySpeed = 100.0f + waveCounter * 10.0f;
+
+    static bool seeded = false;
+
+    if (!seeded)
+    {
+        std::srand(static_cast<unsigned int>(std::time(nullptr)));
+        seeded = true;
+    }
+
+    enemies.clear();
     for (const auto& platform : platforms)
     {
-        sf::FloatRect platformBounds = platform.getBounds();
-        float enemyY = platformBounds.top - 40.0f;
-        enemies.emplace_back(800.0f, enemyY, 40.0f, 40.0f, enemySpeed);
+        if (std::rand() % 2 == 0)
+        {
+            sf::FloatRect platformBounds = platform.getBounds();
+            float enemyY = platformBounds.top - enemyHeight;
+            enemies.emplace_back(enemyStartX, enemyY, enemyWidth, enemyHeight, enemySpeed, 2);
+        }
     }
 }
+
 
 
 void Game::spawnNextWave()
@@ -165,6 +275,20 @@ void Game::handleShooting()
         shootClock.restart();
     }
 }
+
+void Game::updateUI()
+{
+    float elapsedTime = gameClock.getElapsedTime().asSeconds();
+    timeText.setString("Czas: " + std::to_string(static_cast<int>(elapsedTime)));
+    killsText.setString("Punkty: " + std::to_string(killCount));
+}
+
+void Game::updateLivesText()
+{
+    livesText.setString("Zycia: " + std::to_string(lives));
+}
+
+
 
 
 
