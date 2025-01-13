@@ -1,3 +1,5 @@
 # projekt_inf_2024
 
-test commit
+Temat: 1
+Tytul: Penguin Defense
+Autor: Daniel Bakuniewicz, s199092
