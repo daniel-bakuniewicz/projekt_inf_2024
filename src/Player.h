@@ -5,6 +5,12 @@ class Player
 {
 private:
     sf::RectangleShape shape;
+    sf::Texture texture;
+    sf::Sprite sprite;
+    int currentFrame;
+    int totalFrames;
+    float frameDuration;
+    float frameTimer;
     float speed;
     float jumpVelocity;
     float gravity;
@@ -19,6 +25,8 @@ public:
     void update(float deltaTime, const sf::RenderWindow& window);
     void checkCollision(const sf::FloatRect& platformBounds);
     void render(sf::RenderWindow& window);
+    void initAnimation(const std::string& textureFile, int frames, float duration);
+    void updateAnimation(float deltaTime);
 
     sf::FloatRect getBounds() const;
 };

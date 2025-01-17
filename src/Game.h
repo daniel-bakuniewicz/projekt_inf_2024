@@ -10,6 +10,7 @@ class Game
 {
 private:
     sf::RenderWindow window;
+    sf::Texture enemyTexture;
     sf::Texture backgroundTexture;
     sf::Sprite backgroundSprite;
     sf::Font font;                
@@ -19,9 +20,11 @@ private:
     sf::Text livesText;
 
     Player player;
+    
     std::vector<Platform> platforms;
     std::vector<Enemy> enemies;
     std::vector<Bullet> bullets;
+
 
     int killCount;  
     int waveCounter;

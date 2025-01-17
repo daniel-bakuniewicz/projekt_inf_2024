@@ -7,6 +7,8 @@ Game::Game() : window(sf::VideoMode(800, 600), "Penguin Defense"), waveCounter(1
     window.setFramerateLimit(60);
     initBackground();
     generateMap();
+    player.initAnimation("assets/player_walk_animation.png", 6, 0.15f);
+
 
     if (!platforms.empty())
     {
@@ -19,6 +21,12 @@ Game::Game() : window(sf::VideoMode(800, 600), "Penguin Defense"), waveCounter(1
     {
         throw std::runtime_error("Failed to load font: assets/arial.ttf");
     }
+
+    if (!enemyTexture.loadFromFile("assets/enemy_animation.png"))
+    {
+        throw std::runtime_error("Failed to load enemy texture");
+    }
+
 
     timeText.setFont(font);
     timeText.setCharacterSize(20);
@@ -34,8 +42,8 @@ Game::Game() : window(sf::VideoMode(800, 600), "Penguin Defense"), waveCounter(1
     livesText.setCharacterSize(20);
     livesText.setFillColor(sf::Color::White);
     livesText.setPosition(600.0f, 70.0f);
-    updateLivesText();
 
+    updateLivesText();
     generateEnemies();
 }
 
@@ -45,6 +53,7 @@ void Game::initBackground()
     {
         throw std::runtime_error("Failed to load background.png");
     }
+
     backgroundSprite.setTexture(backgroundTexture);
 }
 
@@ -57,6 +66,7 @@ void Game::run()
         float deltaTime = clock.restart().asSeconds();
 
         sf::Event event;
+
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
@@ -66,15 +76,11 @@ void Game::run()
         }
 
         player.update(deltaTime, window);
+        player.updateAnimation(deltaTime);
 
         for (auto& platform : platforms)
         {
             player.checkCollision(platform.getBounds());
-        }
-
-        for (auto& enemy : enemies)
-        {
-            enemy.update(deltaTime);
         }
 
         handleShooting();
@@ -82,10 +88,12 @@ void Game::run()
         for (auto it = bullets.begin(); it != bullets.end();)
         {
             it->update(deltaTime);
+
             if (it->getBounds().left > window.getSize().x)
             {
                 it = bullets.erase(it);
             }
+
             else
             {
                 ++it;
@@ -109,6 +117,7 @@ void Game::run()
                         enemyIt = enemies.erase(enemyIt);
                         killCount++;
                     }
+
                     else
                     {
                         ++enemyIt;
@@ -116,6 +125,7 @@ void Game::run()
 
                     break;
                 }
+
                 else
                 {
                     ++enemyIt;
@@ -136,28 +146,27 @@ void Game::run()
                 updateLivesText();
                 enemyIt = enemies.erase(enemyIt);
             }
+
             else if (enemyIt->getBounds().left <= 0)
             {
                 lives--;
                 updateLivesText();
                 enemyIt = enemies.erase(enemyIt);
             }
+
             else
             {
                 ++enemyIt;
             }
         }
 
-
         if (lives <= 0)
         {
             window.close();
         }
 
-
-
         spawnNextWave();
-
+    
         updateUI();
 
         window.clear();
@@ -171,6 +180,8 @@ void Game::run()
         for (auto& enemy : enemies)
         {
             enemy.render(window);
+            enemy.update(deltaTime);
+            enemy.updateAnimation(deltaTime);  
         }
 
         for (auto& bullet : bullets)
@@ -194,7 +205,7 @@ void Game::generateMap()
     float windowWidth = window.getSize().x;
     float windowHeight = window.getSize().y;
 
-    float platformWidth = 100.0f;
+    float platformWidth = 200.0f;
     float platformHeight = 10.0f;
 
     float leftX = 0.0f;
@@ -203,6 +214,7 @@ void Game::generateMap()
     float gap = 100.0f;
 
     platforms.clear();
+
     for (int i = 0; i < 5; ++i)
     {
         platforms.emplace_back(leftX, startY - i * gap, platformWidth, platformHeight);
@@ -218,27 +230,21 @@ void Game::generateEnemies()
     float enemyStartX = window.getSize().x - enemyWidth;
     float enemySpeed = 100.0f + waveCounter * 10.0f;
 
-    static bool seeded = false;
-
-    if (!seeded)
-    {
-        std::srand(static_cast<unsigned int>(std::time(nullptr)));
-        seeded = true;
-    }
-
     enemies.clear();
+
     for (const auto& platform : platforms)
     {
         if (std::rand() % 2 == 0)
         {
             sf::FloatRect platformBounds = platform.getBounds();
-            float enemyY = platformBounds.top - enemyHeight;
-            enemies.emplace_back(enemyStartX, enemyY, enemyWidth, enemyHeight, enemySpeed, 2);
+            float enemyY = platformBounds.top - 40.0f;
+
+            Enemy enemy(800.0f, enemyY, 40.0f, 40.0f, 100.0f, 2);
+            enemy.initAnimation(enemyTexture, 8, 0.2f);
+            enemies.push_back(enemy);
         }
     }
 }
-
-
 
 void Game::spawnNextWave()
 {
@@ -268,6 +274,7 @@ void Game::handleShooting()
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && shootClock.getElapsedTime().asSeconds() > shootDelay)
     {
         sf::Vector2f playerPosition = player.getBounds().getPosition();
+
         float bulletX = playerPosition.x + player.getBounds().width / 2.0f;
         float bulletY = playerPosition.y + player.getBounds().height / 2.0f;
 
@@ -279,6 +286,7 @@ void Game::handleShooting()
 void Game::updateUI()
 {
     float elapsedTime = gameClock.getElapsedTime().asSeconds();
+
     timeText.setString("Czas: " + std::to_string(static_cast<int>(elapsedTime)));
     killsText.setString("Punkty: " + std::to_string(killCount));
 }

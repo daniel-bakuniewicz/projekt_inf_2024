@@ -87,6 +87,7 @@ void Player::checkCollision(const sf::FloatRect& platformBounds)
     if (playerBounds.intersects(platformBounds) && verticalVelocity > 0)
     {
         float playerBottom = playerBounds.top + playerBounds.height;
+        
         if (playerBottom <= platformBounds.top + 5.0f)
         {
             shape.setPosition(shape.getPosition().x, platformBounds.top - (playerBounds.height / 2.0f));
@@ -103,5 +104,51 @@ sf::FloatRect Player::getBounds() const
 
 void Player::render(sf::RenderWindow& window)
 {
-    window.draw(shape);
+    sprite.setPosition(shape.getPosition());
+    window.draw(sprite);
 }
+
+void Player::initAnimation(const std::string& textureFile, int frames, float duration)
+{
+    if (!texture.loadFromFile(textureFile))
+    {
+        throw std::runtime_error("Failed to load texture: " + textureFile);
+    }
+
+    float scaleFactor = 3.0f;
+    sprite.setTexture(texture);
+    sprite.setScale(scaleFactor, scaleFactor);
+
+    int frameWidth = texture.getSize().x / frames;
+    int frameHeight = texture.getSize().y;
+
+    sprite.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+
+    sprite.setOrigin(frameWidth / 2.0f, frameHeight / 2.0f - 10.0f);
+
+    sprite.setScale(-scaleFactor, scaleFactor);
+
+    currentFrame = 0;
+    totalFrames = frames;
+    frameDuration = duration;
+    frameTimer = 0.0f;
+}
+
+
+
+void Player::updateAnimation(float deltaTime)
+{
+    frameTimer += deltaTime;
+
+    if (frameTimer >= frameDuration)
+    {
+        frameTimer -= frameDuration;
+        currentFrame = (currentFrame + 1) % totalFrames;
+
+        int frameWidth = texture.getSize().x / totalFrames;
+        sprite.setTextureRect(sf::IntRect(currentFrame * frameWidth, 0, frameWidth, texture.getSize().y));
+    }
+}
+
+
+
