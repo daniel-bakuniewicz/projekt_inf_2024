@@ -14,6 +14,10 @@ set(SOURCES
     src/Platform.cpp
     src/Enemy.cpp
     src/Bullet.cpp
+    src/MainMenu.cpp
+    src/PauseMenu.cpp
+    src/DeathScreen.cpp
+    src/HelpMenu.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})

@@ -21,8 +21,6 @@ void Enemy::render(sf::RenderWindow& window)
     window.draw(sprite);
 }
 
-
-
 sf::FloatRect Enemy::getBounds() const
 {
     return shape.getGlobalBounds();
@@ -72,6 +70,11 @@ void Enemy::updateAnimation(float deltaTime)
         int frameWidth = sprite.getTexture()->getSize().x / totalFrames;
         sprite.setTextureRect(sf::IntRect(currentFrame * frameWidth, 0, frameWidth, sprite.getTexture()->getSize().y));
     }
+}
+
+int Enemy::getHealth() const
+{
+    return health;
 }
 
 

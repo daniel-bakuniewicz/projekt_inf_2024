@@ -36,6 +36,7 @@ void Player::update(float deltaTime, const sf::RenderWindow& window)
     {
         canFallThrough = true;
     }
+
     else
     {
         canFallThrough = false;
@@ -46,6 +47,7 @@ void Player::update(float deltaTime, const sf::RenderWindow& window)
         float enhancedGravity = gravity * 2.0f;
         verticalVelocity += enhancedGravity * deltaTime;
     }
+
     else
     {
         verticalVelocity += gravity * deltaTime;
@@ -61,6 +63,7 @@ void Player::update(float deltaTime, const sf::RenderWindow& window)
     }
 
     sf::Vector2f position = shape.getPosition();
+    
     float halfWidth = shape.getSize().x / 2.0f;
 
     if (position.x - halfWidth < 0)

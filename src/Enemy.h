@@ -21,13 +21,15 @@ private:
 public:
     Enemy(float x, float y, float width, float height, float speed, int initialHealth = 2);
 
+    sf::FloatRect getBounds() const;
+
     void update(float deltaTime);
     void render(sf::RenderWindow& window);
     void initAnimation(const sf::Texture& sharedTexture, int frames, float duration);
     void updateAnimation(float deltaTime);
-
-    sf::FloatRect getBounds() const;
-
     void takeDamage();
+
+    int getHealth() const;
+    
     bool isDead() const;
 };

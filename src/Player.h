@@ -7,14 +7,17 @@ private:
     sf::RectangleShape shape;
     sf::Texture texture;
     sf::Sprite sprite;
+
     int currentFrame;
     int totalFrames;
+
     float frameDuration;
     float frameTimer;
     float speed;
     float jumpVelocity;
     float gravity;
     float verticalVelocity;
+    
     bool onGround;
     bool canFallThrough;
 
