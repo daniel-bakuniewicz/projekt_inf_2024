@@ -11,7 +11,7 @@ Gracz wciela się w rolę Pingwina, który musi chronić swój gatunek przed dra
 
 ## Kompilacja i uruchomienie programu
 
-Aby skompilować program, wykonaj poniższe kroki w terminalu:
+Aby skompilować program: sklonuj repozytorium, a następnie wykonaj poniższe kroki w terminalu:
 
 ```bash
 cd build
