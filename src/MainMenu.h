@@ -26,7 +26,6 @@ private:
     int currentPlayerFrame = 0;
     int currentEnemyFrame = 0;
 
-
     bool startPressed = false;
     int selectedDifficulty = 1;
 

@@ -255,7 +255,6 @@ void Game::renderGame()
     {
         window.draw(statusMessage);
     }
-
     else
     {
         showStatusMessage = false;
@@ -278,21 +277,18 @@ void Game::updateEnemies(float deltaTime)
             updateLivesText();
             enemyIt = enemies.erase(enemyIt);
         }
-
         else if (enemyIt->getBounds().left <= 0)
         {
             lives--;
             updateLivesText();
             enemyIt = enemies.erase(enemyIt);
         }
-
         else
         {
             ++enemyIt;
         }
     }
 }
-
 
 void Game::updateBullets(float deltaTime)
 {
@@ -304,7 +300,6 @@ void Game::updateBullets(float deltaTime)
         {
             it = bullets.erase(it);
         }
-
         else
         {
             ++it;
@@ -328,7 +323,6 @@ void Game::updateBullets(float deltaTime)
                     enemyIt = enemies.erase(enemyIt);
                     killCount++;
                 }
-
                 else
                 {
                     ++enemyIt;
@@ -336,7 +330,6 @@ void Game::updateBullets(float deltaTime)
 
                 break;
             }
-
             else
             {
                 ++enemyIt;
@@ -572,19 +565,16 @@ void Game::loadGame(const std::string& filename)
         {
             saveFile >> lives;
         }
-
         else if (type == "kills")
         {
             saveFile >> killCount;
         }
-
         else if (type == "player")
         {
             float x, y;
             saveFile >> x >> y;
             player.init(window, x, y);
         }
-
         else if (type == "enemy")
         {
             float x, y;
@@ -594,7 +584,6 @@ void Game::loadGame(const std::string& filename)
             enemy.initAnimation(enemyTexture, 8, 0.2f);
             enemies.push_back(enemy);
         }
-
         else if (type == "bullet")
         {
             float x, y;

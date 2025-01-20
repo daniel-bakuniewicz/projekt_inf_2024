@@ -124,7 +124,6 @@ void MainMenu::update(float deltaTime)
     enemySprite.setPosition(20.f, window.getSize().y - 80.f);
 }
 
-
 void MainMenu::render()
 {
     window.clear();

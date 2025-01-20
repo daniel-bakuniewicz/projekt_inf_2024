@@ -36,7 +36,6 @@ void Player::update(float deltaTime, const sf::RenderWindow& window)
     {
         canFallThrough = true;
     }
-
     else
     {
         canFallThrough = false;
@@ -47,7 +46,6 @@ void Player::update(float deltaTime, const sf::RenderWindow& window)
         float enhancedGravity = gravity * 2.0f;
         verticalVelocity += enhancedGravity * deltaTime;
     }
-
     else
     {
         verticalVelocity += gravity * deltaTime;
@@ -70,7 +68,6 @@ void Player::update(float deltaTime, const sf::RenderWindow& window)
     {
         shape.setPosition(halfWidth, position.y);
     }
-
     else if (position.x + halfWidth > window.getSize().x)
     {
         shape.setPosition(window.getSize().x - halfWidth, position.y);
@@ -136,8 +133,6 @@ void Player::initAnimation(const std::string& textureFile, int frames, float dur
     frameDuration = duration;
     frameTimer = 0.0f;
 }
-
-
 
 void Player::updateAnimation(float deltaTime)
 {

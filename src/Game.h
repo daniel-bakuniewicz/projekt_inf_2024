@@ -39,7 +39,6 @@ private:
     int lives;
     int waveCounter;
 
-    void initBackground();
     void initUI();
 
     void handleInput(bool& isPaused);
@@ -70,8 +69,6 @@ private:
     void showStatus(const std::string& message);
 
     bool showStatusMessage = false;
-
-
 
 public:
     Game();
